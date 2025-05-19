@@ -148,7 +148,7 @@
   <div class="city-container">
     <div class="city-title" id="cityName">城市</div>
     <div class="city-section">
-      <div class="section-title">基础介绍</div>
+      <div class="section-title">城市故事</div>
       <div id="introBase">加载中...</div>
     </div>
     <div class="city-section">
@@ -157,21 +157,26 @@
     </div>
     <div class="city-section">
       <div class="section-title">热门旅游原因</div>
-      <div id="introReason">加载中...</div>
+      <div>
+        <div id="introReason">加载中...</div>
+        <div style="font-weight:600;color:#666;margin:18px 0 4px 0;">时下热门</div>
+        <ul id="hotEvents" style="margin:0;padding-left:18px;color:#888;font-size:0.98rem;"></ul>
+      </div>
     </div>
     <div class="city-section">
       <div class="section-title">名人好评</div>
-      <div class="quote" id="introQuote">加载中...</div>
+      <div id="introQuotes"></div>
     </div>
     <div class="btn-group">
       <button class="icon-btn" id="foodBtn">
         <span class="icon icon-food" id="foodIcon"></span>
-        <span>美食</span>
+        <span>来这吃什么</span>
       </button>
       <button class="icon-btn" id="travelBtn">
         <span class="icon icon-travel" id="travelIcon"></span>
-        <span>旅行</span>
+        <span>来这怎么玩</span>
       </button>
+      <a class="back-link" id="homeBtn" href="#" style="margin-top:10px;">返回首页</a>
     </div>
   </div>
   <script>
@@ -197,46 +202,100 @@
     // 城市数据结构扩展
     const cityDetail = {
       "北京": {
-        base: "北京，位于中国华北平原北部，是中国的首都和历史文化名城，地处中国北方。自元代以来一直是中国的政治中心。",
+        base: "北京，三千年古都，见证了元明清三代帝王的兴衰。这里有紫禁城的恢弘、天安门的庄严、胡同的烟火气。如今，北京不仅是中国的政治文化中心，更以科技创新、艺术活力和多元生活方式吸引着世界目光。",
         climate: "属温带季风气候，四季分明，春秋适宜旅游。",
         reason: "拥有丰富的历史遗迹和现代都市风貌，是中国文化与历史的缩影。",
-        quote: "‘不到长城非好汉。’——毛泽东"
+        quotes: [
+          "‘北京的烤鸭和胡同，都是人间至味。’——梁实秋",
+          "‘北京是我的家，是我灵感的源泉。’——老舍"
+        ]
       },
       "上海": {
-        base: "上海，位于中国东部沿海，是中国最大的经济中心城市，地处长江入海口。融合中西文化，现代与传统并存。",
+        base: "上海，近代中国的开埠之地，见证了东西方文化的交融。外滩的万国建筑、弄堂里的烟火气，诉说着城市的历史。今天的上海，是中国最具国际范的都市，金融、科技、艺术、时尚在这里交汇，夜色璀璨，活力无限。",
         climate: "亚热带季风气候，春秋温和，适合出行。",
         reason: "国际化大都市，购物、美食、夜景丰富，外滩和东方明珠等地标吸引众多游客。",
-        quote: "‘上海是中国的窗口。’——邓小平"
+        quotes: [
+          "‘上海的弄堂和小吃，是生活的温柔乡。’——汪曾祺",
+          "‘上海是我成长的地方。’——周立波"
+        ]
       },
       "广州": {
-        base: "广州，位于中国南部珠江三角洲，是岭南文化发源地和中国重要的商贸城市。",
+        base: "广州，自秦汉以来就是中国对外贸易的重要港口。这里孕育了岭南文化，见证了海上丝绸之路的繁荣。如今，广州以美食之都、创新都市著称，早茶、花市、珠江夜游，展现着南国的独特魅力。",
         climate: "亚热带季风气候，冬暖夏热，10月至次年3月气候宜人。",
         reason: "美食之都，早茶文化和多元美食吸引八方来客。",
-        quote: "‘食在广州。’——民间谚语"
+        quotes: [
+          "‘广州的早茶，是人间烟火气最美的模样。’——蔡澜",
+          "‘广州是我心中的家。’——余秋雨"
+        ]
       },
       "成都": {
-        base: "成都，位于中国西南部四川盆地，是天府之国的中心城市，历史悠久，文化底蕴深厚。",
+        base: "成都，古蜀文明的发源地，三国故事与诗酒田园交织。杜甫草堂、武侯祠、宽窄巷子，诉说着历史的厚重。今天的成都，是美食天堂、熊猫故乡，也是新经济和慢生活的代表城市。",
         climate: "亚热带湿润气候，3-6月、9-11月气候宜人。",
         reason: "熊猫故乡，美食天堂，慢生活与历史文化并存。",
-        quote: "‘少不入川，老不出蜀。’——民间谚语"
+        quotes: [
+          "‘成都的麻辣和闲适，最能抚慰人心。’——陈晓卿",
+          "‘成都，来了就不想走。’——李宇春"
+        ]
       },
       "西安": {
-        base: "西安，位于中国中部关中平原，是十三朝古都，中华文明的重要发源地。",
+        base: "西安，十三朝古都，秦始皇兵马俑、汉唐盛世遗迹遍布。这里是丝绸之路的起点，钟楼、古城墙见证着历史的沧桑。如今的西安，既有厚重的历史底蕴，也有现代都市的活力与包容。",
         climate: "温带半湿润气候，春秋两季适宜出游。",
         reason: "兵马俑、古城墙等世界级历史遗迹吸引全球游客。",
-        quote: "‘西安是一本活的中国历史教科书。’——余秋雨"
+        quotes: [
+          "‘西安的面食和故事，都是人间至味。’——苏东坡",
+          "‘西安的历史让人敬畏。’——余秋雨"
+        ]
       }
     };
     if(cityDetail[city]) {
       document.getElementById('introBase').textContent = cityDetail[city].base;
       document.getElementById('introClimate').textContent = cityDetail[city].climate;
       document.getElementById('introReason').textContent = cityDetail[city].reason;
-      document.getElementById('introQuote').textContent = cityDetail[city].quote;
+      const quotes = cityDetail[city].quotes || [];
+      document.getElementById('introQuotes').innerHTML = quotes.map(q => `<div class='quote'>${q}</div>`).join('');
+      // 模拟API：生成2-3条城市热点
+      const mockEvents = {
+        "北京": [
+          "2024北京国际音乐节（国家大剧院，7月12日-7月20日）",
+          "故宫夜游特别开放（7月15日-7月18日）",
+          "北京马拉松赛（8月5日）",
+          "草莓音乐节（奥林匹克公园，7月27日-7月28日）"
+        ],
+        "上海": [
+          "上海国际电影节（上海影城，7月10日-7月18日）",
+          "外滩灯光秀夏季特别场（7月每周五六）",
+          "五月天演唱会（上海体育场，7月22日）",
+          "上海F1大奖赛（8月10日）"
+        ],
+        "广州": [
+          "广州塔夜跑嘉年华（7月13日）",
+          "岭南美食节（上下九步行街，7月20日-7月25日）",
+          "周杰伦演唱会（天河体育中心，8月2日）"
+        ],
+        "成都": [
+          "成都国际啤酒节（宽窄巷子，7月18日-7月22日）",
+          "大熊猫主题展（成都博物馆，7月整月）",
+          "草莓音乐节（东安湖公园，8月3日-8月4日）"
+        ],
+        "西安": [
+          "西安古城墙夜跑（7月19日）",
+          "兵马俑光影秀（华清池，7月-8月每晚）",
+          "西安国际美食节（大唐不夜城，7月25日-7月30日）"
+        ]
+      };
+      function getRandomEvents(arr) {
+        const n = Math.floor(Math.random()*2)+2; // 2-3条
+        const shuffled = arr.slice().sort(()=>0.5-Math.random());
+        return shuffled.slice(0, n);
+      }
+      const events = mockEvents[city] ? getRandomEvents(mockEvents[city]) : [];
+      document.getElementById('hotEvents').innerHTML = events.map(e=>`<li>${e}</li>`).join('');
     } else {
       document.getElementById('introBase').textContent = '暂无该城市详细信息。';
       document.getElementById('introClimate').textContent = '';
       document.getElementById('introReason').textContent = '';
-      document.getElementById('introQuote').textContent = '';
+      document.getElementById('introQuotes').innerHTML = '';
+      document.getElementById('hotEvents').innerHTML = '';
     }
     // icon SVG
     const foodIcons = {
@@ -260,6 +319,10 @@
     };
     document.getElementById('travelBtn').onclick = function() {
       window.location.href = 'travel.html?city=' + encodeURIComponent(city);
+    };
+    document.getElementById('homeBtn').onclick = function(e) {
+      e.preventDefault();
+      window.location.href = 'index.html';
     };
   </script>
 </body>
