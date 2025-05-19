@@ -6,24 +6,66 @@
   <title>城市旅行</title>
   <link rel="stylesheet" href="style.css">
   <script src="data.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap">
   <style>
+    html, body {
+      height: 100%;
+      background: var(--city-bg, #f5f5f7);
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      font-family: 'FZLuXun', serif;
+      margin: 0;
+      padding: 0;
+    }
+    .travel-container {
+      background: #fff;
+      border-radius: 32px;
+      box-shadow: none;
+      border: none;
+      max-width: 600px;
+      width: 92vw;
+      margin: 64px 0 64px 0;
+      padding: 56px 40px 48px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .travel-title {
+      font-family: 'FZYiKai', 'Noto Serif SC', 'STKaiti', 'KaiTi', serif;
+      font-size: 2.2rem;
+      color: #222;
+      margin-bottom: 36px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-align: center;
+    }
     .section-title {
-      font-size: 1.3rem;
-      margin: 32px 0 16px 0;
-      color: #409eff;
+      font-size: 1.08rem;
+      color: #888;
+      margin-bottom: 6px;
+      font-family: 'FZLuXun', serif;
+      font-weight: 600;
       text-align: left;
+      width: 100%;
     }
     .spot-list {
       margin-bottom: 24px;
       padding-left: 0;
       list-style: none;
+      width: 100%;
     }
     .spot-item {
-      background: #f7faff;
+      background: #f7f7f7;
       border-radius: 10px;
       margin-bottom: 14px;
       padding: 16px 18px;
       text-align: left;
+      font-family: 'FZLuXun', serif;
       box-shadow: 0 1px 4px rgba(64,158,255,0.04);
     }
     .spot-name {
@@ -31,6 +73,7 @@
       font-size: 1.08rem;
       margin-bottom: 4px;
       color: #222;
+      font-family: 'FZLuXun', serif;
     }
     .info-block {
       margin-bottom: 18px;
@@ -39,65 +82,258 @@
       padding: 12px 16px;
       color: #444;
       text-align: left;
+      font-family: 'FZLuXun', serif;
     }
     .back-link {
       display: inline-block;
-      margin-top: 24px;
-      color: #409eff;
+      margin-top: 32px;
+      color: #888;
       text-decoration: none;
       font-size: 1rem;
+      border-radius: 12px;
+      padding: 10px 24px;
+      background: #f5f5f7;
+      font-family: 'FZLuXun', serif;
+      border: none;
+      transition: background 0.18s;
     }
     .back-link:hover {
-      text-decoration: underline;
+      background: #e0e0e0;
+      color: #222;
     }
-    @media (max-width: 600px) {
-      .section-title {
-        font-size: 1.08rem;
-        margin: 22px 0 10px 0;
+    @media (max-width: 700px) {
+      .travel-container {
+        padding: 32px 8px 24px 8px;
+        border-radius: 18px;
+        margin: 24px 0 24px 0;
       }
-      .spot-item, .info-block {
-        padding: 10px 6px;
-        font-size: 0.98rem;
+      .travel-title {
+        font-size: 1.2rem;
+        margin-bottom: 22px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 id="cityName">旅行</h1>
-    <div id="content"></div>
+  <div class="travel-container">
+    <div class="travel-title" id="cityName">旅行</div>
+    <div style="width:100%;">
+      <div class="section-title">名胜古迹</div>
+      <ul class="spot-list" id="classicList"></ul>
+      <button class="load-more" id="loadMoreClassic" style="display:none;margin-bottom:18px;">加载更多</button>
+      <div class="section-title">新兴观光点</div>
+      <ul class="spot-list" id="modernList"></ul>
+      <button class="load-more" id="loadMoreModern" style="display:none;margin-bottom:18px;">加载更多</button>
+      <div class="section-title">城市手绘地图</div>
+      <div id="cityMapContainer" style="margin-bottom:24px;"></div>
+    </div>
     <a class="back-link" id="backBtn" href="#">返回城市主页</a>
+    <a class="back-link" id="foodBtn" href="#">浏览"<span id='foodCityName'></span>"美食</a>
   </div>
   <script>
+    // 城市印象色
+    const cityColors = {
+      "北京": {bg: "#f7f3ed"},
+      "上海": {bg: "#f2f6fa"},
+      "广州": {bg: "#f6f7f2"},
+      "成都": {bg: "#f7f6f2"},
+      "西安": {bg: "#f7f4f0"}
+    };
     function getQueryParam(name) {
       const url = new URL(window.location.href);
       return url.searchParams.get(name);
     }
     const city = getQueryParam('city');
     document.getElementById('cityName').textContent = city + ' · 旅行';
-    const content = document.getElementById('content');
-    if(cityData[city]) {
-      let html = '';
-      // 特色旅行目的地
-      html += '<div class="section-title">特色旅行目的地</div>';
-      html += '<ul class="spot-list">';
-      cityData[city].travel.spots.forEach(item => {
-        html += `<li class=\"spot-item\"><div class=\"spot-name\">${item.name}</div><div>${item.desc}</div></li>`;
-      });
-      html += '</ul>';
-      // 适合旅行的时间
-      html += '<div class="section-title">适合旅行的时间</div>';
-      html += `<div class=\"info-block\">${cityData[city].travel.bestTime}</div>`;
-      // 游览注意事项
-      html += '<div class="section-title">游览注意事项</div>';
-      html += `<div class=\"info-block\">${cityData[city].travel.tips}</div>`;
-      content.innerHTML = html;
-    } else {
-      content.innerHTML = '<div style="margin:32px 0;">暂未收录该城市旅行信息。</div>';
+    // 设置印象色
+    if(cityColors[city]) {
+      document.body.style.setProperty('--city-bg', cityColors[city].bg);
+    }
+    if(city === '北京' && cityData[city] && cityData[city].travel.classic && cityData[city].travel.modern) {
+      const classic = cityData[city].travel.classic;
+      const modern = cityData[city].travel.modern;
+      let classicShown = 3;
+      let modernShown = 3;
+      const classicMax = Math.min(classic.length, 8);
+      const modernMax = Math.min(modern.length, 8);
+      // 新增：用于地图点显示/隐藏
+      let shownClassicIdx = Array.from({length: classicShown}, (_, i) => i);
+      let shownModernIdx = Array.from({length: modernShown}, (_, i) => i);
+      let hiddenClassicIdx = [];
+      let hiddenModernIdx = [];
+      function renderList() {
+        // 名胜古迹
+        const classicList = document.getElementById('classicList');
+        classicList.innerHTML = classic.slice(0, classicShown).map((item, idx) => `
+          <li class='spot-item'>
+            <div class='spot-name'>${item.name}</div>
+            <div>${item.desc}</div>
+            <div style="color:#888;font-size:0.98em;margin-top:4px;">适合出游时间：${item.bestTime}</div>
+            <div style="color:#888;font-size:0.98em;">游览注意事项：${item.tips.ticket}，${item.tips.advance}，营业时间${item.tips.open}</div>
+          </li>
+        `).join('');
+        document.getElementById('loadMoreClassic').style.display = classicShown < classicMax ? '' : 'none';
+        // 新兴观光点
+        const modernList = document.getElementById('modernList');
+        modernList.innerHTML = modern.slice(0, modernShown).map((item, idx) => `
+          <li class='spot-item'>
+            <div class='spot-name'>${item.name}</div>
+            <div>${item.desc}</div>
+            <div style="color:#888;font-size:0.98em;margin-top:4px;">适合出游时间：${item.bestTime}</div>
+            <div style="color:#888;font-size:0.98em;">游览注意事项：${item.tips.ticket}，${item.tips.advance}，营业时间${item.tips.open}</div>
+          </li>
+        `).join('');
+        document.getElementById('loadMoreModern').style.display = modernShown < modernMax ? '' : 'none';
+        // 地图和隐藏点
+        renderCityMap();
+        renderHiddenSpots();
+      }
+      document.getElementById('loadMoreClassic').onclick = function() {
+        const prev = classicShown;
+        classicShown = Math.min(classicMax, classicShown + 2);
+        // 新增的点默认显示
+        for(let i=prev;i<classicShown;i++) shownClassicIdx.push(i);
+        renderList();
+      };
+      document.getElementById('loadMoreModern').onclick = function() {
+        const prev = modernShown;
+        modernShown = Math.min(modernMax, modernShown + 2);
+        for(let i=prev;i<modernShown;i++) shownModernIdx.push(i);
+        renderList();
+      };
+      function renderCityMap() {
+        let svg = `<svg width='320' height='220' style='background:#f9f6f2;border-radius:16px;box-shadow:0 2px 8px #eee;'>`;
+        // 城区底图（手绘风格，示意）
+        svg += `<ellipse cx='160' cy='110' rx='140' ry='90' fill='#e0e0e0' fill-opacity='0.18'/>`;
+        svg += `<ellipse cx='160' cy='110' rx='60' ry='40' fill='#888' fill-opacity='0.10'/>`;
+        svg += `<path d='M60,60 Q160,20 260,60 Q300,110 260,180 Q160,200 60,180 Q20,110 60,60' stroke='#888' stroke-width='2' fill='none' stroke-dasharray='8,6'/>`;
+        svg += `<text x='80' y='80' font-size='13' fill='#666' opacity='0.5'>西城区</text>`;
+        svg += `<text x='220' y='80' font-size='13' fill='#666' opacity='0.5'>东城区</text>`;
+        svg += `<text x='220' y='180' font-size='13' fill='#666' opacity='0.5'>朝阳区</text>`;
+        svg += `<text x='60' y='180' font-size='13' fill='#666' opacity='0.5'>海淀区</text>`;
+        svg += `<circle cx='160' cy='110' r='5' fill='#b87b2a' fill-opacity='0.7'/><text x='168' y='114' font-size='12' fill='#b87b2a' opacity='0.7'>市中心</text>`;
+        // classic: 圆点 r=6
+        shownClassicIdx.forEach(idx => {
+          if(idx<classicShown) {
+            const s = classic[idx];
+            svg += `<circle cx='${s.coord[0]}' cy='${s.coord[1]}' r='6' fill='#ffb870' stroke='#b87b2a' stroke-width='2' style='cursor:pointer;' onclick='window.hideSpot&&hideSpot(\'classic\',${idx})'/>`;
+            svg += `<text x='${s.coord[0]+10}' y='${s.coord[1]+4}' font-size='13' fill='#b87b2a' font-family='FZLuXun, serif'>${s.name}</text>`;
+          }
+        });
+        // modern: 方块 12x12
+        shownModernIdx.forEach(idx => {
+          if(idx<modernShown) {
+            const s = modern[idx];
+            svg += `<rect x='${s.coord[0]-6}' y='${s.coord[1]-6}' width='12' height='12' fill='#70c6ff' stroke='#2277bb' stroke-width='2' rx='3' style='cursor:pointer;' onclick='window.hideSpot&&hideSpot(\'modern\',${idx})'/>
+            <text x='${s.coord[0]+10}' y='${s.coord[1]+4}' font-size='13' fill='#2277bb' font-family='FZLuXun, serif'>${s.name}</text>`;
+          }
+        });
+        svg += `</svg>`;
+        document.getElementById('cityMapContainer').innerHTML = svg;
+      }
+      // 隐藏点列表
+      function renderHiddenSpots() {
+        let html = '';
+        if(hiddenClassicIdx.length>0) {
+          html += `<div style='margin-bottom:6px;'><b>已隐藏名胜古迹：</b>`;
+          html += hiddenClassicIdx.map(idx => `<span style='display:inline-block;margin:0 8px 4px 0;padding:2px 8px;border-radius:8px;background:#ffe6c7;color:#b87b2a;cursor:pointer;font-size:0.98em;' onclick='window.showSpot&&showSpot(\'classic\',${idx})'>${classic[idx].name}</span>`).join('');
+          html += `</div>`;
+        }
+        if(hiddenModernIdx.length>0) {
+          html += `<div><b>已隐藏新兴观光点：</b>`;
+          html += hiddenModernIdx.map(idx => `<span style='display:inline-block;margin:0 8px 4px 0;padding:2px 8px;border-radius:8px;background:#c7eaff;color:#2277bb;cursor:pointer;font-size:0.98em;' onclick='window.showSpot&&showSpot(\'modern\',${idx})'>${modern[idx].name}</span>`).join('');
+          html += `</div>`;
+        }
+        document.getElementById('hiddenSpotsContainer').innerHTML = html;
+      }
+      // 全局函数供SVG调用
+      window.hideSpot = function(type, idx) {
+        if(type==='classic') {
+          shownClassicIdx = shownClassicIdx.filter(i=>i!==idx);
+          if(!hiddenClassicIdx.includes(idx)) hiddenClassicIdx.push(idx);
+        } else {
+          shownModernIdx = shownModernIdx.filter(i=>i!==idx);
+          if(!hiddenModernIdx.includes(idx)) hiddenModernIdx.push(idx);
+        }
+        renderCityMap();
+        renderHiddenSpots();
+      };
+      window.showSpot = function(type, idx) {
+        if(type==='classic') {
+          if(!shownClassicIdx.includes(idx)) shownClassicIdx.push(idx);
+          hiddenClassicIdx = hiddenClassicIdx.filter(i=>i!==idx);
+        } else {
+          if(!shownModernIdx.includes(idx)) shownModernIdx.push(idx);
+          hiddenModernIdx = hiddenModernIdx.filter(i=>i!==idx);
+        }
+        renderCityMap();
+        renderHiddenSpots();
+      };
+      // 初始化隐藏点容器
+      let hiddenDiv = document.createElement('div');
+      hiddenDiv.id = 'hiddenSpotsContainer';
+      hiddenDiv.style.marginBottom = '18px';
+      document.getElementById('cityMapContainer').after(hiddenDiv);
+      renderList();
+    } else if(cityData[city] && cityData[city].travel && cityData[city].travel.classic && cityData[city].travel.modern) {
+      // 适配新版数据结构的其他城市
+      const classic = cityData[city].travel.classic;
+      const modern = cityData[city].travel.modern;
+      let classicShown = 3;
+      let modernShown = 3;
+      const classicMax = Math.min(classic.length, 8);
+      const modernMax = Math.min(modern.length, 8);
+      function renderList() {
+        // 名胜古迹
+        const classicList = document.getElementById('classicList');
+        classicList.innerHTML = classic.slice(0, classicShown).map((item, idx) => `
+          <li class='spot-item'>
+            <div class='spot-name'>${item.name}</div>
+            <div>${item.desc}</div>
+            <div style="color:#888;font-size:0.98em;margin-top:4px;">适合出游时间：${item.bestTime}</div>
+            <div style="color:#888;font-size:0.98em;">游览注意事项：${item.tips.ticket}，${item.tips.advance}，营业时间${item.tips.open}</div>
+          </li>
+        `).join('');
+        document.getElementById('loadMoreClassic').style.display = classicShown < classicMax ? '' : 'none';
+        // 新兴观光点
+        const modernList = document.getElementById('modernList');
+        modernList.innerHTML = modern.slice(0, modernShown).map((item, idx) => `
+          <li class='spot-item'>
+            <div class='spot-name'>${item.name}</div>
+            <div>${item.desc}</div>
+            <div style="color:#888;font-size:0.98em;margin-top:4px;">适合出游时间：${item.bestTime}</div>
+            <div style="color:#888;font-size:0.98em;">游览注意事项：${item.tips.ticket}，${item.tips.advance}，营业时间${item.tips.open}</div>
+          </li>
+        `).join('');
+        document.getElementById('loadMoreModern').style.display = modernShown < modernMax ? '' : 'none';
+      }
+      document.getElementById('loadMoreClassic').onclick = function() {
+        classicShown = Math.min(classicMax, classicShown + 2);
+        renderList();
+      };
+      document.getElementById('loadMoreModern').onclick = function() {
+        modernShown = Math.min(modernMax, modernShown + 2);
+        renderList();
+      };
+      renderList();
+    } else if(cityData[city] && cityData[city].travel && cityData[city].travel.spots) {
+      // 兼容老数据结构
+      const spots = cityData[city].travel.spots;
+      const spotList = document.getElementById('classicList');
+      spotList.innerHTML = spots.map(item => `<li class='spot-item'><div class='spot-name'>${item.name}</div><div>${item.desc}</div></li>`).join('');
+      document.getElementById('modernList').innerHTML = '';
+      document.getElementById('loadMoreClassic').style.display = 'none';
+      document.getElementById('loadMoreModern').style.display = 'none';
     }
     document.getElementById('backBtn').onclick = function(e) {
       e.preventDefault();
       window.location.href = 'city.html?city=' + encodeURIComponent(city);
+    };
+    // 美食按钮跳转
+    document.getElementById('foodCityName').textContent = city;
+    document.getElementById('foodBtn').onclick = function(e) {
+      e.preventDefault();
+      window.location.href = 'food.html?city=' + encodeURIComponent(city);
     };
   </script>
 </body>
