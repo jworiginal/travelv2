@@ -16,21 +16,29 @@
     }
     body {
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'FZLuXun', serif;
       margin: 0;
       padding: 0;
+      font-family: 'FZLuXun', serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .main-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
     }
     .container {
       background: #fff;
-      border-radius: 32px;
+      border-radius: 48px;
       box-shadow: none;
       border: none;
-      max-width: 420px;
+      max-width: 630px;
       width: 92vw;
-      padding: 56px 32px 40px 32px;
+      padding: 84px 48px 60px 48px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -38,10 +46,10 @@
     }
     h1 {
       font-family: 'FZLuXun', serif;
-      font-size: 2.3rem;
+      font-size: 3.2rem;
       letter-spacing: 3px;
       color: #222;
-      margin-bottom: 36px;
+      margin-bottom: 54px;
       font-weight: 700;
       text-shadow: none;
       white-space: nowrap;
@@ -107,22 +115,15 @@
     }
     @media (max-width: 600px) {
       h1 {
-        font-size: 1.3rem;
-        margin-bottom: 22px;
+        font-size: 1.7rem;
+        margin-bottom: 28px;
         white-space: normal;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        text-align: center;
         line-height: 1.5;
       }
-      h1 span {
-        display: block;
-        width: 100%;
-        text-align: center;
-      }
       .container {
-        padding: 32px 8px 24px 8px;
-        border-radius: 18px;
+        padding: 48px 12px 32px 12px;
+        border-radius: 28px;
       }
       .city-marquee {
         margin-top: 18px;
@@ -158,7 +159,7 @@
 <body>
   <div class="main-center">
     <div class="container">
-      <h1><span>Your</span> <span>next</span> <span>destination</span></h1>
+      <h1>想去哪玩儿</h1>
       <div class="input-group">
         <input type="text" id="cityInput" placeholder="请输入中国城市名">
         <button id="confirmBtn">确认</button>
