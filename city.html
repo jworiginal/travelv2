@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>城市简介</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="data.js"></script>
+  <!-- 引入字体 -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap">
+  <style>
+    html, body {
+      height: 100%;
+      background: var(--city-bg, #f5f5f7);
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      font-family: 'FZLuXun', serif;
+      margin: 0;
+      padding: 0;
+    }
+    .city-container {
+      background: #fff;
+      border-radius: 32px;
+      box-shadow: none;
+      border: none;
+      max-width: 600px;
+      width: 92vw;
+      margin: 64px 0 64px 0;
+      padding: 56px 40px 48px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .city-title {
+      font-family: 'FZYiKai', 'Noto Serif SC', 'STKaiti', 'KaiTi', serif;
+      font-size: 2.5rem;
+      color: #222;
+      margin-bottom: 36px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+    .city-section {
+      width: 100%;
+      margin-bottom: 28px;
+      color: #333;
+      font-size: 1.13rem;
+      line-height: 1.8;
+      font-family: 'FZLuXun', serif;
+    }
+    .section-title {
+      font-size: 1.08rem;
+      color: #888;
+      margin-bottom: 6px;
+      font-family: 'FZLuXun', serif;
+      font-weight: 600;
+    }
+    .quote {
+      font-style: italic;
+      color: #888;
+      border-left: 3px solid #e0e0e0;
+      padding-left: 12px;
+      margin-top: 8px;
+      font-size: 1.05rem;
+    }
+    .btn-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-top: 36px;
+      align-items: center;
+    }
+    .icon-btn {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #fff;
+      border-radius: 18px;
+      border: none;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 22px 28px;
+      cursor: pointer;
+      font-size: 1.18rem;
+      font-family: 'FZLuXun', serif;
+      font-weight: 600;
+      color: #222;
+      transition: box-shadow 0.18s, background 0.18s;
+      outline: none;
+      margin: 0 auto;
+    }
+    .icon-btn:hover {
+      background: var(--city-btn, #f5f7fa);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+    .icon-btn .icon {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .icon-food {
+      background: #ffe6c7;
+      border: 2px solid #ffb870;
+    }
+    .icon-travel {
+      background: #c7eaff;
+      border: 2px solid #70c6ff;
+    }
+    @media (max-width: 700px) {
+      .city-container {
+        padding: 32px 8px 24px 8px;
+        border-radius: 18px;
+        margin: 24px 0 24px 0;
+      }
+      .city-title {
+        font-size: 1.3rem;
+        margin-bottom: 22px;
+      }
+      .btn-group {
+        gap: 16px;
+        margin-top: 22px;
+      }
+      .icon-btn {
+        padding: 14px 10px;
+        font-size: 1rem;
+      }
+      .icon-btn .icon {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="city-container">
+    <div class="city-title" id="cityName">城市</div>
+    <div class="city-section">
+      <div class="section-title">基础介绍</div>
+      <div id="introBase">加载中...</div>
+    </div>
+    <div class="city-section">
+      <div class="section-title">气候与适合旅游时间</div>
+      <div id="introClimate">加载中...</div>
+    </div>
+    <div class="city-section">
+      <div class="section-title">热门旅游原因</div>
+      <div id="introReason">加载中...</div>
+    </div>
+    <div class="city-section">
+      <div class="section-title">名人好评</div>
+      <div class="quote" id="introQuote">加载中...</div>
+    </div>
+    <div class="btn-group">
+      <button class="icon-btn" id="foodBtn">
+        <span class="icon icon-food" id="foodIcon"></span>
+        <span>美食</span>
+      </button>
+      <button class="icon-btn" id="travelBtn">
+        <span class="icon icon-travel" id="travelIcon"></span>
+        <span>旅行</span>
+      </button>
+    </div>
+  </div>
+  <script>
+    // 城市印象色
+    const cityColors = {
+      "北京": {bg: "#f7f3ed", btn: "#ffe6c7"},
+      "上海": {bg: "#f2f6fa", btn: "#c7eaff"},
+      "广州": {bg: "#f6f7f2", btn: "#eaffc7"},
+      "成都": {bg: "#f7f6f2", btn: "#ffe6f7"},
+      "西安": {bg: "#f7f4f0", btn: "#ffe6c7"}
+    };
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    const city = getQueryParam('city');
+    document.getElementById('cityName').textContent = city || '城市';
+    // 设置印象色
+    if(cityColors[city]) {
+      document.body.style.setProperty('--city-bg', cityColors[city].bg);
+      document.body.style.setProperty('--city-btn', cityColors[city].btn);
+    }
+    // 城市数据结构扩展
+    const cityDetail = {
+      "北京": {
+        base: "北京，位于中国华北平原北部，是中国的首都和历史文化名城，地处中国北方。自元代以来一直是中国的政治中心。",
+        climate: "属温带季风气候，四季分明，春秋适宜旅游。",
+        reason: "拥有丰富的历史遗迹和现代都市风貌，是中国文化与历史的缩影。",
+        quote: "‘不到长城非好汉。’——毛泽东"
+      },
+      "上海": {
+        base: "上海，位于中国东部沿海，是中国最大的经济中心城市，地处长江入海口。融合中西文化，现代与传统并存。",
+        climate: "亚热带季风气候，春秋温和，适合出行。",
+        reason: "国际化大都市，购物、美食、夜景丰富，外滩和东方明珠等地标吸引众多游客。",
+        quote: "‘上海是中国的窗口。’——邓小平"
+      },
+      "广州": {
+        base: "广州，位于中国南部珠江三角洲，是岭南文化发源地和中国重要的商贸城市。",
+        climate: "亚热带季风气候，冬暖夏热，10月至次年3月气候宜人。",
+        reason: "美食之都，早茶文化和多元美食吸引八方来客。",
+        quote: "‘食在广州。’——民间谚语"
+      },
+      "成都": {
+        base: "成都，位于中国西南部四川盆地，是天府之国的中心城市，历史悠久，文化底蕴深厚。",
+        climate: "亚热带湿润气候，3-6月、9-11月气候宜人。",
+        reason: "熊猫故乡，美食天堂，慢生活与历史文化并存。",
+        quote: "‘少不入川，老不出蜀。’——民间谚语"
+      },
+      "西安": {
+        base: "西安，位于中国中部关中平原，是十三朝古都，中华文明的重要发源地。",
+        climate: "温带半湿润气候，春秋两季适宜出游。",
+        reason: "兵马俑、古城墙等世界级历史遗迹吸引全球游客。",
+        quote: "‘西安是一本活的中国历史教科书。’——余秋雨"
+      }
+    };
+    if(cityDetail[city]) {
+      document.getElementById('introBase').textContent = cityDetail[city].base;
+      document.getElementById('introClimate').textContent = cityDetail[city].climate;
+      document.getElementById('introReason').textContent = cityDetail[city].reason;
+      document.getElementById('introQuote').textContent = cityDetail[city].quote;
+    } else {
+      document.getElementById('introBase').textContent = '暂无该城市详细信息。';
+      document.getElementById('introClimate').textContent = '';
+      document.getElementById('introReason').textContent = '';
+      document.getElementById('introQuote').textContent = '';
+    }
+    // icon SVG
+    const foodIcons = {
+      "北京": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="24" rx="18" ry="10" fill="#ffb870" stroke="#ff9800" stroke-width="2"/><ellipse cx="24" cy="20" rx="10" ry="4" fill="#fff3e0" stroke="#ff9800" stroke-width="1.5"/></svg>',
+      "上海": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><rect x="10" y="18" width="28" height="12" rx="6" fill="#ffe0b2" stroke="#ff9800" stroke-width="2"/><ellipse cx="24" cy="24" rx="8" ry="4" fill="#fff" stroke="#ff9800" stroke-width="1.5"/></svg>',
+      "广州": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="28" rx="12" ry="6" fill="#fffde7" stroke="#ffb870" stroke-width="2"/><rect x="16" y="16" width="16" height="12" rx="6" fill="#ffe6c7" stroke="#ff9800" stroke-width="1.5"/></svg>',
+      "成都": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="28" rx="12" ry="6" fill="#ffe6e6" stroke="#ff6f91" stroke-width="2"/><rect x="16" y="16" width="16" height="12" rx="6" fill="#fff" stroke="#ff6f91" stroke-width="1.5"/></svg>',
+      "西安": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="28" rx="12" ry="6" fill="#fff8e1" stroke="#ffb870" stroke-width="2"/><rect x="16" y="16" width="16" height="12" rx="6" fill="#ffe6c7" stroke="#ff9800" stroke-width="1.5"/></svg>'
+    };
+    const travelIcons = {
+      "北京": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><rect x="10" y="18" width="28" height="14" rx="7" fill="#c7eaff" stroke="#70c6ff" stroke-width="2"/><rect x="20" y="10" width="8" height="8" rx="4" fill="#fff" stroke="#70c6ff" stroke-width="1.5"/></svg>',
+      "上海": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="28" rx="12" ry="6" fill="#c7eaff" stroke="#70c6ff" stroke-width="2"/><rect x="16" y="16" width="16" height="12" rx="6" fill="#fff" stroke="#70c6ff" stroke-width="1.5"/></svg>',
+      "广州": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><rect x="10" y="18" width="28" height="14" rx="7" fill="#eaffc7" stroke="#b6e880" stroke-width="2"/><rect x="20" y="10" width="8" height="8" rx="4" fill="#fff" stroke="#b6e880" stroke-width="1.5"/></svg>',
+      "成都": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="28" rx="12" ry="6" fill="#ffe6f7" stroke="#ffb6e6" stroke-width="2"/><rect x="16" y="16" width="16" height="12" rx="6" fill="#fff" stroke="#ffb6e6" stroke-width="1.5"/></svg>',
+      "西安": '<svg width="36" height="36" viewBox="0 0 48 48" fill="none"><rect x="10" y="18" width="28" height="14" rx="7" fill="#ffe6c7" stroke="#ffb870" stroke-width="2"/><rect x="20" y="10" width="8" height="8" rx="4" fill="#fff" stroke="#ffb870" stroke-width="1.5"/></svg>'
+    };
+    document.getElementById('foodIcon').innerHTML = foodIcons[city] || '';
+    document.getElementById('travelIcon').innerHTML = travelIcons[city] || '';
+    document.getElementById('foodBtn').onclick = function() {
+      window.location.href = 'food.html?city=' + encodeURIComponent(city);
+    };
+    document.getElementById('travelBtn').onclick = function() {
+      window.location.href = 'travel.html?city=' + encodeURIComponent(city);
+    };
+  </script>
+</body>
+</html> 

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>城市美食</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="data.js"></script>
+  <style>
+    .section-title {
+      font-size: 1.3rem;
+      margin: 32px 0 16px 0;
+      color: #409eff;
+      text-align: left;
+    }
+    .food-list {
+      margin-bottom: 24px;
+      padding-left: 0;
+      list-style: none;
+    }
+    .food-item {
+      background: #f7faff;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      padding: 16px 18px;
+      text-align: left;
+      box-shadow: 0 1px 4px rgba(64,158,255,0.04);
+    }
+    .food-name {
+      font-weight: bold;
+      font-size: 1.08rem;
+      margin-bottom: 4px;
+      color: #222;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 24px;
+      color: #409eff;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+      .section-title {
+        font-size: 1.08rem;
+        margin: 22px 0 10px 0;
+      }
+      .food-item {
+        padding: 12px 8px;
+        font-size: 0.98rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="cityName">美食</h1>
+    <div id="content"></div>
+    <a class="back-link" id="backBtn" href="#">返回城市主页</a>
+  </div>
+  <script>
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    const city = getQueryParam('city');
+    document.getElementById('cityName').textContent = city + ' · 美食';
+    const content = document.getElementById('content');
+    if(cityData[city]) {
+      let html = '';
+      // 城市特色美食
+      html += '<div class="section-title">城市特色美食</div>';
+      html += '<ul class="food-list">';
+      cityData[city].food.city.forEach(item => {
+        html += `<li class="food-item"><div class="food-name">${item.name}</div><div>${item.desc}</div></li>`;
+      });
+      html += '</ul>';
+      // 区域特色美食
+      html += '<div class="section-title">区域特色美食</div>';
+      html += '<ul class="food-list">';
+      cityData[city].food.region.forEach(item => {
+        html += `<li class="food-item"><div class="food-name">${item.name}</div><div>${item.desc}</div></li>`;
+      });
+      html += '</ul>';
+      content.innerHTML = html;
+    } else {
+      content.innerHTML = '<div style="margin:32px 0;">暂未收录该城市美食信息。</div>';
+    }
+    document.getElementById('backBtn').onclick = function(e) {
+      e.preventDefault();
+      window.location.href = 'city.html?city=' + encodeURIComponent(city);
+    };
+  </script>
+</body>
+</html> 
